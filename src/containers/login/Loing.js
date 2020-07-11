@@ -59,7 +59,7 @@ class Login extends Component
         return(
             <div className="loginpage-container">
             <div className="logo">
-              <img alt="loading" src={logo} height="60" width="60" />
+              <img alt="loading" src={logo} height="32" width="139" />
               <span style={{ color: "white" }}> Prydan </span>
             </div>
             <div className="form-widget">
