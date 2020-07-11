@@ -4,6 +4,7 @@ import logo from './../../assets/images/logo.png'
 import cx from "classnames";
 import './style.scss';
 import If from './../../components/If';
+import axios from 'axios'; 
 
 class Login extends Component 
 {
@@ -21,10 +22,44 @@ class Login extends Component
         },
         formError: ""
     };
-    onSubmit = e => {
+    formSubmitHandler = e => {
         e.preventDefault();
         const { email, password } = e.target.elements;
-         
+
+        this.setState(
+          {
+            email: {
+              value: email.value,
+              isFocused: false,
+              error: !email.value ? "required" : ""
+            },
+            password: {
+              value: password.value,
+              isFocused: false,
+              error: !password.value ? "required" : ""
+            }
+          },
+          () =>{
+              const { email, password } = this.state;
+              if (email.value && password.value) {
+                  axios
+                  .get(`token`,{
+                      auth:{
+                        username: this.state.email.value, 
+                        password: this.state.password.value
+                      }  
+                  })
+                  .then( response =>{
+
+                  })
+                  .catch (error =>{
+                      this.setState({
+                        formError:"Invalid username or password. Please try again."
+                      }); 
+                  }); 
+              }
+          }
+        ); 
     };
     
     inputChangeHandler = e => {
@@ -69,7 +104,7 @@ class Login extends Component
               <If condition={formError}>
                 <span className="form-error">{formError}</span>
               </If>
-              <form onSubmit={this.onSubmit}>
+              <form onSubmit={this.formSubmitHandler}>
                 <div className={cx("clearfix field-wrapper" , { "label-active": email.isFocused }  )}>
                   <label className={cx("float-left" ,  { focused: email.isFocused }  )}>
                     <span className={cx("label" ,  { focused: email.isFocused } )}>Username</span>
