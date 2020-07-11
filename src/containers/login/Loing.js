@@ -3,6 +3,7 @@ import  { Route, Link } from 'react-router-dom';
 import logo from './../../assets/images/logo.png'
 import cx from "classnames";
 import './style.scss';
+import If from './../../components/If';
 
 class Login extends Component 
 {
@@ -24,9 +25,9 @@ class Login extends Component
         e.preventDefault();
         const { email, password } = e.target.elements;
          
-      };
+    };
     
-      onChange = e => {
+    inputChangeHandler = e => {
         const { name, value } = e.target;
         this.setState({
           [name]: {
@@ -56,6 +57,7 @@ class Login extends Component
     
 
     render() {
+      const { showPassword, email, password, formError } = this.state;
         return(
             <div className="loginpage-container">
             <div className="logo">
@@ -64,48 +66,59 @@ class Login extends Component
             </div>
             <div className="form-widget">
               <h2 className="title t-global">Sign In</h2>
-             
+              <If condition={formError}>
+                <span className="form-error">{formError}</span>
+              </If>
               <form onSubmit={this.onSubmit}>
-                <div className={cx("clearfix field-wrapper"   )}>
-                  <label className={cx("float-left"   )}>
-                    <span className={cx("label"  )}>Username</span>
+                <div className={cx("clearfix field-wrapper" , { "label-active": email.isFocused }  )}>
+                  <label className={cx("float-left" ,  { focused: email.isFocused }  )}>
+                    <span className={cx("label" ,  { focused: email.isFocused } )}>Username</span>
                     <input
                       type="text"
                       name="email"
                       id="email"
                       placeholder= "Username" 
-                      onFocus={this.onChange}
-                      onChange={this.onChange}
+                      onFocus={this.inputChangeHandler  }
+                      onChange={this.inputChangeHandler }
                       onBlur={this.onBlurr}
                       autoComplete="off"
                     />
                   </label>
                   <div className="float-right">
-                    <span className="helptxt"> </span>
+                    <span className="helptxt"> {email.error}</span>
                   </div>
                 </div>
-                <div className={cx("clearfix field-wrapper" )}>
-                  <label className={cx("float-left" )}>
-                    <span className={cx("label" )}>Password</span>
+                <div className={cx("clearfix field-wrapper" , { "label-active": password.isFocused } )}>
+                  <label className={cx("float-left" ,{ focused: password.isFocused })}>
+                    <span className={cx("label" , { focused: password.isFocused })}>Password</span>
                     <input
                       id="password"
-                      type= "text" 
+                      type= {showPassword ? "text" : "password"}
                       placeholder="Password"
-                      onFocus={this.onChange}
-                      onChange={this.onChange}
+                      onFocus={this.inputChangeHandler }
+                      onChange={this.inputChangeHandler }
                       onBlur={this.onBlurr}
                       name="password"
                       autoComplete="off"
                     />
                   </label>
                   <div className="float-right">
-                    <span className="helptxt"> </span>
+                    <span className="helptxt">{password.error} </span>
                     <span
                       style={{ position: "absolute", right: 0 }}
                       className="show-hide-toggle"
                       role="presentation"
                       onClick={this.togglePassword}
                     >
+                        {showPassword ? (
+                    <i className="fa fa-eye" style={{ cursor: "pointer", fontSize: "15px" }} title="Show Password" />
+                  ) : (
+                    <i
+                      className="fa fa-eye-slash"
+                      style={{ cursor: "pointer", fontSize: "15px" }}
+                      title="Show Password"
+                    />
+                  )}
                       
                     </span>
                   </div>
