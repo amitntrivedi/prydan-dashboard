@@ -5,6 +5,7 @@ import cx from "classnames";
 import './style.scss';
 import If from './../../components/If';
 import axios from 'axios'; 
+import TokenManager from './../../utils/tokenManager'; 
 
 class Login extends Component 
 {
@@ -43,13 +44,15 @@ class Login extends Component
               const { email, password } = this.state;
               if (email.value && password.value) {
                   axios
-                  .get(`token`,{
-                      auth:{
-                        username: this.state.email.value, 
-                        password: this.state.password.value
-                      }  
+                  .get(`https://dev.prydansoftware.com/api/auth`,{
+                    auth:{
+                      username: this.state.email.value, 
+                      password: this.state.password.value
+                    }  
                   })
                   .then( response =>{
+                      TokenManager.set(response.data.token, response.data["expires at"]);
+                      TokenManager.setUserName(this.state.email.value, response.data["id"]);
 
                   })
                   .catch (error =>{
