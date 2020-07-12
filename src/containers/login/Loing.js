@@ -42,17 +42,26 @@ class Login extends Component
           },
           () =>{
               const { email, password } = this.state;
+              var data = JSON.stringify({
+                "email":email.value,
+                "password":password.value,
+                "returnSecureToken":true
+              });
+
+              var config = {
+                method: 'post',
+                url: 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDaVxuzZC6okhDv8lyCNptGR4UhBOgjKz0',
+                headers: { 
+                  'Content-Type': 'application/json'
+                },
+                data : data
+              };
               if (email.value && password.value) {
-                  axios
-                  .get(`https://dev.prydansoftware.com/api/auth`,{
-                    auth:{
-                      username: this.state.email.value, 
-                      password: this.state.password.value
-                    }  
-                  })
+                  axios(config)
                   .then( response =>{
-                      TokenManager.set(response.data.token, response.data["expires at"]);
-                      TokenManager.setUserName(this.state.email.value, response.data["id"]);
+                      TokenManager.set(response.data.idToken, response.data["expiresIn"]);
+                      TokenManager.setUserName(this.state.email.value, response.data["localId"]);
+                      
 
                   })
                   .catch (error =>{
